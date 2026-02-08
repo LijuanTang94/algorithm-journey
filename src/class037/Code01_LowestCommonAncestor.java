@@ -23,13 +23,24 @@ public class Code01_LowestCommonAncestor {
 			// 左树也搜到，右树也搜到，返回root
 			return root;
 		}
-		if (l == null && r == null) {
-			// 都没搜到返回空
-			return null;
-		}
 		// l和r一个为空，一个不为空
 		// 返回不空的那个
 		return l != null ? l : r;
 	}
 
 }
+
+## Approach: Post-order Traversal
+
+### Key Insight
+- Use **post-order traversal** (left → right → root)
+- If a node finds **p in left** and **q in right** (or vice versa) → it's the LCA
+- If both found in one subtree → LCA is deeper, bubble up the result
+
+### Algorithm Logic
+1. **Base case**: If node is null or equals p/q → return node
+2. **Recurse**: Search left and right subtrees
+3. **Both non-null**: Current node is LCA (p and q in different subtrees)
+4. **One non-null**: Return the non-null side (both p and q are there)
+time complexity: O(N) where N is the number of nodes in the tree (each node visited once)
+space complexity: O(H) where H is the height of the tree (due to recursion stack
