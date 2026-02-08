@@ -28,4 +28,86 @@ public class Code02_LowestCommonAncestorBinarySearch {
 		return root;
 	}
 
+	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        while (root != null) {
+            if (root.val > p.val && root.val > q.val) {
+                root = root.left;
+            } else if (root.val < p.val && root.val < q.val) {
+                root = root.right;
+            } else {
+                return root;
+            }
+        }
+        return null;
+    }
+
 }
+
+## Approach: Leverage BST Property
+
+### Key Insight
+- BST property: Left < Root < Right
+- If both p and q **< root** → LCA in left subtree
+- If both p and q **> root** → LCA in right subtree
+- Otherwise → root is LCA (split point or equals p/q)
+time complexity: O(h) where h is the height of the tree
+space complexity: O(1) for iterative, O(h) for recursive due to call stack
+
+## Common Mistakes
+
+### ❌ Mistake 1: Only check one node
+```java
+if (root.val < p.val) {  // ❌ Only checks p
+    root = root.right;
+}
+```
+✅ **Fix**: Check both p and q
+```java
+if (root.val < p.val && root.val < q.val) {
+    root = root.right;
+}
+```
+
+---
+
+### ❌ Mistake 2: Assume p < q
+```java
+// ❌ Assumes p.val < q.val
+if (root.val < p.val) {
+    return lowestCommonAncestor(root.right, p, q);
+}
+```
+✅ **Fix**: Always check both values independently
+
+---
+
+### ❌ Mistake 3: Use Binary Tree approach
+```java
+// ❌ Unnecessary post-order traversal
+TreeNode left = lowestCommonAncestor(root.left, p, q);
+TreeNode right = lowestCommonAncestor(root.right, p, q);
+if (left != null && right != null) return root;
+```
+✅ **Fix**: BST allows value comparison, no need to search both sides
+
+---
+
+### ❌ Mistake 4: Wrong loop condition
+```java
+while (root != p || root != q) {  // ❌ Always true
+```
+✅ **Fix**: No special loop condition needed, just `while (root != null)`
+
+---
+
+### ❌ Mistake 5: Forget split case
+```java
+if (root.val > p.val && root.val > q.val) {
+    root = root.left;
+} else {
+    root = root.right;  // ❌ Missing split point case
+}
+```
+✅ **Fix**: Always include else to return root
+
+
