@@ -47,3 +47,36 @@ public class Code03_WidthOfBinaryTree1 {
 	}
 
 }
+
+
+
+## Common Pitfalls (Based on This Implementation)
+
+1. **Mixing queue pointers with tree indices**
+   - Queue indices (`l`, `r`) are only for traversal order.
+   - Tree position indices represent virtual positions in a complete binary tree.
+   - These two concepts must never be mixed.
+
+2. **Computing width inside the inner loop**
+   - Width is a per-level concept.
+   - It should be computed once per level using:
+     ```
+     rightmostIndex - leftmostIndex + 1
+     ```
+   - Calculating width while iterating nodes in the same level leads to incorrect results.
+
+3. **Using the wrong parent index for children**
+   - Child indices must be derived from the parent’s tree index, not queue pointers.
+   - Correct formula:
+     ```java
+     leftIndex  = parentIndex * 2;
+     rightIndex = parentIndex * 2 + 1;
+     ```
+
+4. **Desynchronizing node and index storage**
+   - When nodes and indices are stored separately, they must stay perfectly aligned.
+   - Incrementing the queue pointer twice for a single node breaks this alignment.
+
+5. **Integer overflow**
+   - Tree indices can grow exponentially with depth.
+   - Use `long` for indices or normalize indices per level.

@@ -70,3 +70,42 @@ public class Code05_PreorderSerializeAndDeserialize {
 	}
 
 }
+
+
+## Approach: Preorder Traversal with Delimiter
+
+### Key Idea
+- **Serialize**: Use preorder traversal (root → left → right), mark null nodes as `#`
+- **Deserialize**: Reconstruct tree using the same preorder sequence
+- Use `,` as delimiter to separate values
+
+### Why Preorder?
+- Can reconstruct tree **without ambiguity**
+- Process root first, then recursively build left and right subtrees
+- Natural fit for recursive deserialization
+
+java# Serialize and Deserialize Binary Tree - 速记卡
+
+## 7大易错点
+
+| # | 错误 | 正确 |
+|---|------|------|
+| 1 | `append("val")` | `append(root.val)` |
+| 2 | `== "#"` | `.equals("#")` |
+| 3 | `new TreeNode(str)` | `Integer.parseInt(str)` |
+| 4 | `nodes[idx++]...nodes[idx++]` | `val = nodes[idx++]` 只用一次 |
+| 5 | 递归内 `split()` | 外层 split 一次 |
+| 6 | 不重置 idx | 每次 `idx = 0` |
+| 7 | `int idx` 参数传递 | 类变量 / 数组 / Queue |
+
+---
+
+## 末尾逗号说明
+```java
+"1,2,#,#,".split(",")  // → [1, 2, #, #]
+
+// 末尾空串被舍去，但没关系！
+// 因为递归正好结束，不会再访问 nodes[idx]
+```
+
+**结论**：不需要处理末尾空串，递归天然正确！
