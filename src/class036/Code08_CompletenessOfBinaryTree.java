@@ -12,37 +12,94 @@ public class Code08_CompletenessOfBinaryTree {
 	}
 
 	// 提交以下的方法
-	// 如果测试数据量变大了就修改这个值
-	public static int MAXN = 101;
+	// 不把空节点加进去，但是一旦看到空节点了，后面就不能再有非空节点了
+	public boolean isCompleteTree1(TreeNode root) {
+        if (root == null) return true;
+        Queue<TreeNode> q = new LinkedList<>();
+        boolean seenNull = false;
+        q.offer(root);
+        while (!q.isEmpty()) {
+            TreeNode cur = q.poll();
+            if (cur.left == null) {
+                seenNull = true;
+            } else {
+                if (seenNull) return false;
+                q.offer(cur.left);
+            }
+            if (cur.right == null) {
+                seenNull = true;
+            } else {
+                if (seenNull) return false;
+                q.offer(cur.right);
+            }
+        }
+        return true;
 
-	public static TreeNode[] queue = new TreeNode[MAXN];
+    }
 
-	public static int l, r;
+	// 把空节点也加进去，一旦看到空节点了，后面就不能再有非空节点了
+	public boolean isCompleteTree2(TreeNode root) {
+        if (root == null) return true;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        boolean seenNull = false;
+        while (!q.isEmpty()) {
+            TreeNode cur = q.poll();
+            if (cur == null) {
+                seenNull = true;
+            } else {
+                if (seenNull) {
+                    return false;
+                }
+                q.offer(cur.left);
+                q.offer(cur.right);
+            }
+        }
+        return true;
+    }
 
-	public static boolean isCompleteTree(TreeNode h) {
-		if (h == null) {
-			return true;
-		}
-		l = r = 0;
-		queue[r++] = h;
-		// 是否遇到过左右两个孩子不双全的节点
-		boolean leaf = false;
-		while (l < r) {
-			h = queue[l++];
-			if ((h.left == null && h.right != null) || (leaf && (h.left != null || h.right != null))) {
-				return false;
-			}
-			if (h.left != null) {
-				queue[r++] = h.left;
-			}
-			if (h.right != null) {
-				queue[r++] = h.right;
-			}
-			if (h.left == null || h.right == null) {
-				leaf = true;
-			}
-		}
-		return true;
-	}
+}
 
+
+
+# Check Completeness of a Binary Tree (LeetCode 958)
+
+## Core Idea
+
+A binary tree is **complete** if:
+- All levels except possibly the last are completely filled
+- All nodes in the last level are as far left as possible
+
+To check this, we use **level-order traversal (BFS)**.
+
+Key observation:
+> **Once a `null` node is seen during BFS, all following nodes must also be `null`.  
+If a non-null node appears after that, the tree is NOT complete.**
+
+---
+
+## Correct Algorithm (BFS with a Flag)
+
+1. Perform BFS using a queue.
+2. Maintain a boolean flag `seenNull`:
+   - `false` initially
+3. For each node dequeued:
+   - If the node is `null`, set `seenNull = true`
+   - If the node is **not null**:
+     - If `seenNull` is already `true`, return `false`
+     - Otherwise, enqueue **both left and right children (even if they are null)**
+4. If BFS finishes without violation, return `true`.
+
+---
+
+## ❌ What Is Wrong in This Implementation
+
+### 1. You never enqueue `null` nodes
+
+```java
+if (cur.left != null) {
+    q.offer(cur.left);
+}
+if (cur.right != null) {
+    q.offer(cur.right);
 }
