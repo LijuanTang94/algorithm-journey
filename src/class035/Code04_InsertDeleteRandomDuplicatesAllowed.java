@@ -59,58 +59,60 @@ public class Code04_InsertDeleteRandomDuplicatesAllowed {
 }
 
 
-To support insert, remove, and getRandom in O(1) time with duplicates allowed:
+# RandomizedCollection (O(1) with Duplicates Allowed)
 
-Use an ArrayList to store all values (duplicates included)
+## Solution Idea
 
-Use a HashMap<value, Set<index>> to track all positions of each value in the array
+To support `insert`, `remove`, and `getRandom` in **O(1)** time while allowing duplicates:
 
-Insert
+- Use an **ArrayList** to store all values (order does not matter)
+- Use a **HashMap<Value, Set<Index>>** to track all positions of each value in the array
 
-Append the value to the array
+The key invariant is:
+> **Every index stored in the map must correspond to a valid position in the array.**
 
-Record its index in the corresponding set
+---
 
-Return true if the value did not exist before
+### Insert
+- Append the value to the end of the array
+- Add its index to the corresponding set in the map
+- Return `true` if the value did not exist before
 
-Remove
+---
 
-Remove any index of the value from its index set
+### Remove
+- Take any index of the value from its index set
+- If the value is not the last element:
+  - Move the last array element into the removed position
+  - Update index sets for both values
+- Remove the last element from the array
+- Remove the key from the map if its index set becomes empty
 
-If the value is not the last element:
+---
 
-Move the last array element to the removed position
+### GetRandom
+- Generate a random index in `[0, size - 1]`
+- Return the element at that index
 
-Update index sets for both values
+All operations run in **O(1)** time.
 
-Remove the last element from the array
+---
 
-Delete the map entry if the index set becomes empty
+## Common Pitfalls
 
-GetRandom
+1. **Storing values instead of indices in the set**  
+   → The set must store array indices, not values.
 
-Pick a random index from the array and return its value
+2. **Forgetting to update index sets after swapping**  
+   → Any movement in the array must be reflected in the map.
 
-All operations run in O(1) time.
+3. **Incorrect handling of `val == lastValue`**  
+   → Removing the last element does not require a swap.
 
-Common Pitfalls
+4. **Leaving empty sets in the map**  
+   → Always remove the key when its set becomes empty.
 
-Storing values instead of indices in the set
-→ The set must track array indices, not values.
-
-Forgetting to update index sets after swapping
-→ Any index change in the array must be reflected in the map.
-
-Not handling val == lastValue correctly
-→ Removing the last element requires no swap, only cleanup.
-
-Leaving empty sets in the map
-→ Always remove the key when its index set becomes empty.
-
-Incorrect use of Math.random()
-→ Cast after multiplication: (int)(Math.random() * size).
-
-Key Takeaway
-
-The array may change order,
-but the map must always reflect the exact indices in the array.
+5. **Incorrect use of `Math.random()`**  
+   → Cast after multiplication:  
+   ```java
+   (int)(Math.random() * size)
