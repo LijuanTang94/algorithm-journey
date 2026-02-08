@@ -77,4 +77,30 @@ public class Code01_LevelOrderTraversal {
 		return ans;
 	}
 
+    List<List<Integer>> res;
+    public List<List<Integer>> levelOrder3(TreeNode root) {
+        res = new ArrayList<>();
+        if (root == null) //千万不要忘记！！！！！
+            return res;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> path = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode cur = q.poll();
+                path.add(cur.val);
+                if (cur.left != null) {
+                    q.offer(cur.left);
+                }
+                if (cur.right != null) {
+                    q.offer(cur.right);
+                }
+            }
+            res.add(new ArrayList<>(path));
+
+        }
+        return res;
+    }
+
 }
