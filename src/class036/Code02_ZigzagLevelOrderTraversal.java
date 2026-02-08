@@ -58,4 +58,80 @@ public class Code02_ZigzagLevelOrderTraversal {
 		return ans;
 	}
 
+	public List<List<Integer>> zigzagLevelOrder2(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        boolean flag = true;
+        while (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> level = new ArrayList<>();
+            for(int i = 0; i < size; i++) {
+                TreeNode cur = q.poll();
+                level.add(cur.val);
+                if (cur.left != null) {
+                    q.offer(cur.left);
+                }
+                if (cur.right != null) {
+                    q.offer(cur.right);
+                }
+            }
+            if (!flag) {
+                Collections.reverse(level);
+            }
+            res.add(new ArrayList<>(level));
+            flag = !flag;
+        }
+        return res;
+    }
+
 }
+
+# Binary Tree Zigzag Level Order Traversal (LeetCode 103)
+
+## Core Idea
+
+Perform a **level-order traversal (BFS)** of the binary tree using a queue.
+
+For each level:
+- Traverse nodes from left to right as usual.
+- Alternate the order of values on every level to achieve the zigzag pattern.
+
+A boolean flag is used to indicate the current direction:
+- `true`  → left to right
+- `false` → right to left
+
+---
+
+## Algorithm
+
+1. If the root is `null`, return an empty result.
+2. Use a queue to perform BFS.
+3. For each level:
+   - Record the number of nodes at the current level.
+   - Collect all node values into a list.
+   - Add children to the queue for the next level.
+4. If the direction flag indicates right-to-left:
+   - Reverse the list of values.
+5. Add the level list to the result.
+6. Toggle the direction flag and continue.
+
+---
+
+## Time and Space Complexity
+
+- **Time Complexity:** `O(n)`
+- **Space Complexity:** `O(n)`
+
+Where `n` is the number of nodes in the tree.
+
+---
+
+## Common Pitfalls
+
+1. **Using a non-existent `reverse()` method on List**
+   ```java
+   level.reverse();   // WRONG
+   Collections.reverse(level); // CORRECT
+   ```
