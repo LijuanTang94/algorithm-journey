@@ -14,13 +14,14 @@ public class Code02_DecodeString {
 	// s[i....]开始计算，遇到字符串终止 或者 遇到 ] 停止
 	// 返回 : 自己负责的这一段字符串的结果
 	// 返回之间，更新全局变量where，为了上游函数知道从哪继续！
+	// Character.isLetterOrDigit(s[i]) // Checks if it's either a letter or a digit
 	public static String f(char[] s, int i) {
 		StringBuilder path = new StringBuilder();
 		int cnt = 0;
 		while (i < s.length && s[i] != ']') {
-			if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z')) {
+			if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z')) { //Character.isLetter(s[i]
 				path.append(s[i++]);
-			} else if (s[i] >= '0' && s[i] <= '9') {
+			} else if (s[i] >= '0' && s[i] <= '9') { //Character.isDigit(s[i])
 				cnt = cnt * 10 + s[i++] - '0';
 			} else {
 				// 遇到 [ 
