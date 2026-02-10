@@ -2,6 +2,7 @@ package class048;
 
 // 利用二维前缀和信息迅速得到二维区域和
 // 测试链接 : https://leetcode.cn/problems/range-sum-query-2d-immutable/
+//左 + 上 - 左上 + 自己当前
 public class Code01_PrefixSumMatrix {
 
 	class NumMatrix {
