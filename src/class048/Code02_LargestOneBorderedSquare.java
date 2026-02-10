@@ -5,6 +5,8 @@ package class048;
 // 请你找出边界全部由 1 组成的最大 正方形 子网格
 // 并返回该子网格中的元素数量。如果不存在，则返回 0。
 // 测试链接 : https://leetcode.cn/problems/largest-1-bordered-square/
+time complexity O(n * m * min(n,m))，额外空间复杂度O(1)
+space complexity O(1)
 public class Code02_LargestOneBorderedSquare {
 
 	// 打败比例不高，但完全是常数时间的问题
@@ -53,3 +55,39 @@ public class Code02_LargestOneBorderedSquare {
 	}
 
 }
+
+
+Idea / Approach
+
+1.Enumerate Squares
+
+Fix the top-left corner (a, b) of the square.
+
+Increase the side length k by expanding equally to the right and downward.
+
+The enumeration itself guarantees that the shape is a square.
+
+2.Prefix Sum Preprocessing
+
+Build a 2D prefix sum array from the grid.
+
+This allows querying the number of 1s in any submatrix in O(1) time.
+
+3.Border Validation
+
+The number of 1s on the border of a k × k square is computed as:
+
+sum(outer square) − sum(inner square)
+
+
+4.A valid square border must contain exactly 4 × (k − 1) cells.
+
+If the computed value matches this number, the square’s border is entirely composed of 1s.
+
+5.Update the Answer
+
+Track and update the maximum valid side length found.
+
+Core Insight (One Sentence)
+
+Square enumeration ensures the shape, and prefix sums are only used to efficiently verify that the square’s border consists entirely of ones.
