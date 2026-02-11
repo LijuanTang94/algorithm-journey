@@ -5,6 +5,9 @@ package class049;
 // 找到累加和 >= target 的长度最小的子数组并返回其长度
 // 如果不存在符合条件的子数组返回0
 // 测试链接 : https://leetcode.cn/problems/minimum-size-subarray-sum/
+//注意事项： 这里如果是外层用for循环，每次操作时候r是当前的数，l是当前的数的左边界，sum是当前窗口的累加和 r-l+1就是当前窗口的长度
+// 而外层用while循环，r是下一个数，l是当前的数，sum是当前窗口的累加和 r-l就是当前窗口的长度
+
 public class Code01_MinimumSizeSubarraySum {
 
 	public static int minSubArrayLen(int target, int[] nums) {
