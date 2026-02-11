@@ -43,3 +43,104 @@ public class Code03_MinimumWindowSubstring {
 	}
 
 }
+
+
+
+# Minimum Window Substring — Two Sliding Window Patterns
+
+This problem (LeetCode 76) can be solved using two slightly different sliding window structures.
+
+---
+
+## Pattern A — Remove Only Redundant Characters
+
+### Core Idea
+When the window becomes valid (`need == 0`):
+- Remove only **extra (redundant)** characters
+- Stop when the leftmost character becomes necessary
+
+### Structure
+
+```java
+if (need == 0) {
+    while (count[s.charAt(l)] < 0) {
+        count[s.charAt(l)]++;
+        l++;
+    }
+    updateAnswer();
+}
+Characteristics
+Never removes required characters
+
+Never breaks window validity
+
+No need to restore need
+
+Cleaner logic
+
+Slightly more problem-specific
+
+Mental Model
+Expand → Valid → Remove redundant → Record answer
+Pattern B — Standard Template (Shrink Until Invalid)
+Core Idea
+When the window becomes valid:
+
+Update answer
+
+Keep shrinking until the window becomes invalid
+
+Restore need when necessary
+
+Structure
+while (need == 0) {
+    updateAnswer();
+
+    if (++count[s.charAt(l)] > 0) {
+        need++;
+    }
+    l++;
+}
+Characteristics
+May remove required characters
+
+Intentionally breaks window validity
+
+Requires restoring need
+
+More general template
+
+Works for many window problems
+
+Mental Model
+Expand → Valid → Record → Shrink → Until invalid
+Comparison
+Feature	Pattern A	Pattern B
+Removes required chars	❌ No	✅ Yes
+Needs to restore need	❌ No	✅ Yes
+Simpler for this problem	✅ Yes	⚠ Slightly more verbose
+More general template	⚠ Medium	⭐ Strong
+Why Both Work Here
+Minimum Window has a key property:
+
+Once all redundant characters are removed, the window is already minimal for the current right boundary.
+
+Because of this:
+
+Pattern A finds the minimal valid window directly.
+
+Pattern B finds it and then breaks it intentionally.
+
+Both lead to correct answers.
+
+When Pattern A Fails
+Pattern A may fail for:
+
+"At most K occurrences"
+
+Dynamic frequency constraints
+
+Complex window validity conditions
+
+Pattern B is safer for general sliding window problems.
+
