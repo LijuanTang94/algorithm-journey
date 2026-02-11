@@ -31,3 +31,118 @@ public class Code04_GasStation {
 	}
 
 }
+
+
+# Gas Station — Idea (Brute Force Circular Simulation)
+
+## Core Idea
+
+Try every station as a starting point.
+
+For each starting index `l`:
+- Simulate traveling clockwise around the circular route.
+- Maintain a running fuel balance:
+  
+  balance += gas[i] - cost[i]
+
+- If the balance ever becomes negative, this starting point fails.
+- If we successfully travel `n` stations, return `l`.
+
+---
+
+## Why `% n` is Needed
+
+The gas stations form a circular route.
+
+When the pointer `r` exceeds `n - 1`, we wrap around using:
+
+    r % n
+
+This simulates circular traversal on a linear array.
+
+---
+
+## Algorithm Flow
+
+1. Enumerate each possible starting index `l`.
+2. Expand pointer `r` forward.
+3. Use `r % n` to access stations circularly.
+4. Stop when:
+   - Fuel becomes negative → move to next start
+   - Or we travel `n` stations → return `l`
+5. If no valid start exists → return -1
+
+---
+
+## Time Complexity
+
+Worst case: O(n²)
+
+Each starting position may simulate up to n stations.
+
+
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int n = gas.length;
+        int curSum = 0;
+        int totalSum = 0;
+        int start = 0;
+        for(int i = 0; i < n; i++) {
+            if (curSum < 0) {
+                curSum = gas[i] - cost[i];
+                start = i;
+            }else {
+                curSum += gas[i] - cost[i];
+            }
+            totalSum += gas[i] - cost[i];
+        }
+        return totalSum < 0 ? -1 : start;
+    }
+}
+
+
+# Gas Station — Greedy Solution (O(n))
+
+## Core Idea
+
+If the total amount of gas is less than the total cost,
+it is impossible to complete the circuit.
+
+Otherwise, there must be exactly one valid starting station.
+
+---
+
+## Greedy Insight
+
+While scanning the array:
+
+- Maintain a running balance `curSum`
+- Also maintain a global balance `totalSum`
+
+If `curSum` becomes negative at index `i`:
+
+- Any station between the previous `start` and `i`
+  cannot be a valid starting point
+- Reset `start = i + 1`
+- Reset `curSum = 0`
+
+Continue scanning.
+
+---
+
+## Why This Works
+
+If starting from station `start` fails at `i`,
+then any station between `start` and `i`
+will have even less fuel when reaching `i`.
+
+Therefore, all of them can be skipped.
+
+This guarantees O(n) time complexity.
+
+---
+
+## Final Decision
+
+- If `totalSum < 0` → return -1
+- Otherwise → return `start`
