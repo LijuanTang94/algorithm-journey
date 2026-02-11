@@ -77,3 +77,122 @@ public class Code04_StampingTheGrid {
 	}
 
 }
+
+
+# Stamping the Grid — Prefix Sum + 2D Difference
+
+## Problem
+Given an `m × n` binary matrix `grid`:
+- `0` = empty cell
+- `1` = occupied cell
+
+Given a stamp of size `stampHeight × stampWidth`, determine whether it is possible to cover **all empty cells** with stamps such that:
+- Stamps do NOT cover any occupied cell
+- Stamps may overlap
+- Stamps must stay inside the grid
+- Stamps cannot rotate
+
+---
+
+## Core Idea
+
+This problem combines **2D prefix sum** and **2D difference array**.
+
+- **Prefix sum** → check whether a stamp can be placed
+- **Difference array** → record stamp coverage efficiently
+- **Final check** → ensure every `0` cell is covered at least once
+
+---
+
+## High-Level Approach
+
+1. Build a **2D prefix sum** of the original grid  
+   → allows O(1) check if a rectangle contains any `1`
+
+2. Enumerate all possible stamp placements:
+   - Fix the top-left corner `(a, b)`
+   - Compute bottom-right corner `(c, d)` using stamp size
+   - If the rectangle is all `0`, this placement is valid
+
+3. Use a **2D difference array** to mark stamp coverage
+   - Each valid stamp updates the diff matrix in O(1)
+
+4. Convert the difference array back to actual coverage
+   - Build prefix sum on the diff matrix
+
+5. Verify correctness
+   - Every cell that was `0` in the original grid must have coverage ≥ 1
+
+---
+
+## Coordinate System Convention (VERY IMPORTANT)
+
+| Array | Indexing | Meaning |
+|------|---------|--------|
+| `grid` | 0-based | Original input |
+| `sum` | 1-based | Prefix sum of grid |
+| `diff` | 1-based | Difference array for coverage |
+
+### Mapping Rule
+```text
+grid[i][j]  <->  sum[i+1][j+1]
+grid[i][j]  <->  diff[i+1][j+1]
+Never mix coordinate systems inside the same array.
+
+Prefix Sum Formula (2D)
+sum[r2][c2]
+- sum[r1-1][c2]
+- sum[r2][c1-1]
++ sum[r1-1][c1-1]
+Used to check if a stamp region contains any 1.
+
+Difference Array Update (2D)
+For covering rectangle (a,b) to (c,d) (1-based):
+
+diff[a][b] += 1;
+diff[a][d + 1] -= 1;
+diff[c + 1][b] -= 1;
+diff[c + 1][d + 1] += 1;
+After all updates, rebuild with prefix sum to get coverage counts.
+
+Final Validation Rule
+if (grid[i][j] == 0 && diff[i+1][j+1] == 0) {
+    return false;
+}
+Only empty cells must be covered.
+
+Common Pitfalls (Checklist)
+1. Off-by-One Stamp Boundary
+❌ Wrong:
+
+c = i + stampHeight;
+d = j + stampWidth;
+✅ Correct:
+
+c = i + stampHeight - 1;
+d = j + stampWidth  - 1;
+2. Mixing 0-based and 1-based Coordinates
+grid is 0-based
+
+sum and diff are 1-based
+
+Convert once, then stay consistent
+
+3. Forgetting to Rebuild the Difference Array
+❌ Reading diff directly
+✅ Always build prefix sum on diff before checking
+
+4. Checking All Cells Instead of Only 0 Cells
+❌ Wrong:
+
+if (diff[i][j] == 0) return false;
+✅ Correct:
+
+if (grid[i-1][j-1] == 0 && diff[i][j] == 0) return false;
+5. Modifying the Original Grid
+❌ Do NOT update grid
+✅ Use diff to simulate coverage
+
+One-Sentence Summary
+Use a 2D prefix sum to validate stamp placement and a 2D difference array to track coverage, ensuring every empty cell is covered.
+
